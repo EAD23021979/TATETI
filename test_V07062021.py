@@ -1,4 +1,4 @@
-a
+
 import unittest
 from main import Tateti
 
