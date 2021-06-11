@@ -1,6 +1,6 @@
 
 import unittest
-from main import Tateti
+from main_V07062021 import Tateti
 
 
 class TestTateti:

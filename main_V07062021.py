@@ -279,5 +279,5 @@ class Tateti:
 
 		#print ("out of loop")
 
-JUGAR = Tateti()
-JUGAR.empezar()
+#JUGAR = Tateti()
+#JUGAR.empezar()
