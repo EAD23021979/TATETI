@@ -5,16 +5,139 @@
 # PARA DEBUGUERA REEPLAZA POR NADA "#DEBUGMODE 	|"
 
  
- 
+import datetime as dt # Para importar el modulo que maneja fecjas
 import string #importo funciones para tener el abecedario en una lista.
+from datetime import datetime
 
 
 class Tateti:
 
 	def sumar( self, a, b):
-			self.c = a + b
-			return self.c,a,b		
+		self.c = a + b
+		return self.c,a,b
 
+	def reuperar_archivo_partida_guardada(self, archivo_x):
+
+		from io import open
+		import csv
+
+
+		with open(archivo_x, newline='') as f:
+		    reader = csv.reader(f)
+		    data = list(reader)
+
+		#print(data)
+
+		self.Lista_user1 = list(data[0])
+
+		self.Lista_user2 = list(data[1])
+		self.lista_de_opciones_matriz = list(data[2])
+		
+		
+
+		turno_vl = open (archivo_x, "r")
+		Turno= turno_vl.readlines()[4]
+		self.turno = int(Turno) #data[4]
+
+		turno_vl = open (archivo_x, "r")
+		VL= turno_vl.readlines()[5]
+		self.VL= int(VL) #int(data[5])
+
+
+		return
+
+		# print ("Lista_Jugador_1=",Lista_Jugador_1)
+		# print ("Lista_Jugador_2=",Lista_Jugador_2)
+		# print ("Matriz_Front_End=",Matriz_Front_End)
+		# print ("Turno",Turno)
+		# print ("VL",Turno)
+
+		# LJ1 = self.Lista_user1
+		# LJ2 = self.Lista_user2
+		# MFE = self.lista_de_opciones_matriz
+		# LG = self.winall_auto_step2
+		# Turno = self.turno
+		# VL=self.VL
+
+	def time_stamp_file_generator (self, name):
+		import datetime as dt
+		from io import open
+		time2= datetime.now()
+		time_stamp = str(time2.year) + str(time2.month)  + str(time2.day) + str(time2.hour) + str(time2.minute) + str(time2.second)
+		nombre_archivo = str(name) + str(time_stamp) + ".txt"
+		archivo_texto = open (nombre_archivo, "w")
+		#print ("Tu Partida se guardó con el sigueinte Nombre", nombre_archivo)
+		return nombre_archivo
+
+
+	def guardar_partida (self):
+
+		input_user = input("Desea Guardar la partida? (Y/N) ").upper()
+
+		if input_user == "Y":
+			name= input("Con qué nombre desea grabar el archivo? ")
+			nombre_archivo= self.time_stamp_file_generator (name)
+			
+			archivo_texto = open(nombre_archivo, "w+")
+
+			LJ1 = self.Lista_user1
+			LJ2 = self.Lista_user2
+			MFE = self.lista_de_opciones_matriz
+			LG = self.winall_auto_step2
+			Turno = self.turno
+			VL=self.VL
+
+			archivo_texto.truncate()
+			#archivo_texto.write("Lista_Jugador_1=(")
+
+			for item in LJ1:
+				archivo_texto.write("%s," % str(item))
+
+			archivo_texto = open(nombre_archivo, "r+")
+			archivo_texto.seek(len(archivo_texto.read())-1)
+			archivo_texto.truncate()
+
+
+			#archivo_texto.write("\nLista_Jugador_2=(")
+			archivo_texto.write("\n")
+			for item in LJ2:
+			 	archivo_texto.write("%s," % str(item))
+
+			archivo_texto = open(nombre_archivo, "r+")
+			archivo_texto.seek(len(archivo_texto.read()))
+			archivo_texto.truncate()
+
+
+			#archivo_texto.write("\nMatriz_Front_End=(")
+			archivo_texto.write("\n")
+			for item in MFE:
+				archivo_texto.write("%s," % str(item))
+
+			archivo_texto = open(nombre_archivo, "r+")
+			archivo_texto.seek(len(archivo_texto.read())+1) # No entiendo porque tengo que sumarle 2 si sería el fianl del file!!!
+			archivo_texto.truncate()
+
+			#archivo_texto.write("\nLista_Ganadora=(")
+			archivo_texto.write("\n")
+			for item in LG:
+				archivo_texto.write("%s," % str(item))
+
+			archivo_texto = open(nombre_archivo, "r+")
+			archivo_texto.seek(len(archivo_texto.read())+2) # No entiendo porque tengo que sumarle 2 si sería el fianl del file!!!
+			archivo_texto.truncate()
+
+			archivo_texto.write("\n%s" % str(Turno))
+			archivo_texto.write("\n%s" % str(VL))
+
+			archivo_texto.close()
+
+			print ("Tu Partida se guardó con el sigueinte Nombre", nombre_archivo)
+			#print("Partida Guardada")
+			return
+		
+		else:
+			print ("CHAU")
+			return
 
 	def __init__(self, origen="consola"):
 		self.Lista_user1 = []
@@ -24,7 +147,8 @@ class Tateti:
 		self.lista_de_opciones_matriz = []
 		self.winall_auto_step2 = []
 		self.origen = origen
-		self.turno = 0
+		self.turno = 1
+		self.partida_guardada = 'N'
 
 	def input_usuario(self, msg, test_value=""):
 		if self.origen == "consola":
@@ -33,6 +157,8 @@ class Tateti:
 			return test_value
 
 	def definir_matriz(self, tamanio=3):
+		if self.partida_guardada == 'Y':
+		 	return
 		try:
 			self.VL = int(self.input_usuario("De qué tamaño requerimos la matriz: " ))
 		except Exception:
@@ -48,14 +174,31 @@ class Tateti:
 			ficha = "0"
 		if self.origen == "test":
 			input_user = jugada
+		
+		if self.turno%2==0:
+		 	numero_jugador = "1"
+		 	ficha = "X"
 		else:
-			input_user = self.input_usuario("Elija un opción Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
+		 	numero_jugador= "2"
+		 	ficha = "0"
 
+		input_user = self.input_usuario(" (s) para salvar el juego \n Elija un opción Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
+		#Ver dónde poner este IF para Guardar y cerrar el juego	
+		if input_user =='S':
+			self.guardar_partida()
+			quit()
+		pass
+		
 
 		while input_user not in self.lista_de_opciones_matriz or input_user in ("X", "0"):
-			input_user = self.input_usuario("Elija un opción Jugador %s [%s]: "% (numero_jugador, ficha)).upper()
 
-		if input_user in self.lista_de_opciones_matriz:
+			input_user = self.input_usuario(" (s) para salvar el juego \n Elija un opción Válida Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
+			if input_user =='S':
+				self.guardar_partida()
+				quit()
+			pass
+
+		if input_user in self.lista_de_opciones_matriz:			
 			if numero_jugador == "1":
 				self.Lista_user1.append(input_user)
 				termino_el_partido = self.validacion_ganadores(self.Lista_user1)
@@ -63,12 +206,15 @@ class Tateti:
 					print("GANO EL JUGADOR 1 [X]")
 					self.lista_de_opciones_matriz = [ficha if i == input_user else i for i in self.lista_de_opciones_matriz]
 					self.print_matriz(self.lista_de_opciones_matriz)
+					quit() #
 					return
 			else:
 				self.Lista_user2.append(input_user)
 				termino_el_partido = self.validacion_ganadores(self.Lista_user2)
 				if termino_el_partido == 1:
 					print("GANO EL JUGADOR 2 [0]")
+					print (self.turno)
+					print (self.Lista_user2)
 					self.lista_de_opciones_matriz = [ficha if i == input_user else i for i in self.lista_de_opciones_matriz]
 					self.print_matriz(self.lista_de_opciones_matriz)	
 					return
@@ -141,14 +287,18 @@ class Tateti:
 		# Generar la lista de  opciones a elegir para generar la matriz
 		# ******************************************************************************************
 
-		self.lista_de_opciones_matriz = []
+		
 
-		for a in list_count:
-
-			for i in range(self.VL):
-				#print ("I", i)
-				#print ("self.VL", self.VL)
-				self.lista_de_opciones_matriz.append(self.Letra_ABC(a)+str(i+1))
+		if self.partida_guardada == 'Y':
+			self.lista_de_opciones_matriz = self.lista_de_opciones_matriz
+	
+		else:
+			self.lista_de_opciones_matriz = []
+			for a in list_count:
+				for i in range(self.VL):
+					#print ("I", i)
+					#print ("self.VL", self.VL)
+					self.lista_de_opciones_matriz.append(self.Letra_ABC(a)+str(i+1))
 
 
 		#print("Lista_de_Opciones_matri", self.lista_de_opciones_matriz)
@@ -168,7 +318,7 @@ class Tateti:
 
 		self.print_matriz(self.lista_de_opciones_matriz)
 
-		print(" ")
+		# print(" ")
 		# print ("Lista Jugador 1" , Lista_user1)
 		# print ("Lista Jugador 2" , Lista_user2)
 		# print (" ")
@@ -177,11 +327,28 @@ class Tateti:
 		# print (" ")
 
 	def empezar(self):
+		if self.origen == "test":
+			self.partida_guardada = 'N'
+		else:
+			self.partida_guardada = input("HOLA!! BIENVENIDO AL JUEGO!! --> tiene alguna partida gudardada? (Y/N)",).upper()
+		
+		if self.partida_guardada == 'Y':
+			self.archivo_guardado = input("Con qué nombre grabó su partida anterior?")
+			self.reuperar_archivo_partida_guardada(self.archivo_guardado)
+
 		
 		self.inicializar_tablero()
 
-		self.turno = 0
-		self.termino_el_juego = 1  # Si teRmino del juego es 0 se terminó el juego
+		if self.origen == "consola":
+			pass
+		elif self.origen == "test":
+			return self.partida_guardada == 'N'
+
+
+		if self.partida_guardada == 'N':
+			self.turno = 1
+
+		self.termino_el_juego = 1  # Si teRmino del juego es == 0 se terminó el juego
 
 		while self.termino_el_juego == 1:
 
@@ -236,13 +403,21 @@ class Tateti:
 		return letra
 
 	def print_matriz(self, lista):
-		print ("******"*self.VL)
+		
+		
 
+		print ("******"*self.VL)
+		
 		Matriz_front_end= []
 
 		for i in range (0,len(lista),self.VL):
 			Matriz_front_end.append(list(lista[i:i+self.VL]))
+		
+		# if self.partida_guardada == 'Y':
 
+		# 	Matriz_front_end = self.lista_de_opciones_matriz
+		
+		
 		for i in Matriz_front_end:
 			print (i)
 
@@ -279,5 +454,7 @@ class Tateti:
 
 		#print ("out of loop")
 
+
 #JUGAR = Tateti()
+
 #JUGAR.empezar()
