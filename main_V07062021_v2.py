@@ -23,10 +23,11 @@ class Tateti:
 
 	def random (self,litaOpciones):
 		import random
+		self.lista_robot_ran = []
+
 		print ("ListaOpciones =",litaOpciones)
 
-		self.lista_robot_ran = []
-		
+			
 		for i in litaOpciones:
 			if i == 'X':
 				continue
@@ -39,6 +40,46 @@ class Tateti:
 		self.Jugadar_Robot_Ran=self.lista_robot_ran[n]
 
 		#print ("Jugada Robot: ", self.Jugadar_Robot_Ran)
+		return self.Jugadar_Robot_Ran
+
+	def random_inteligencia_B2 (self,litaOpciones):
+		
+		import random
+		print ("ListaOpciones =",litaOpciones)
+
+		self.lista_robot_ran = []
+		
+		if 'B2' in litaOpciones:
+			self.Jugadar_Robot_Ran = 'B2'
+			print ("Jugada Robot: (B2)", self.Jugadar_Robot_Ran)
+			return self.Jugadar_Robot_Ran
+
+		for i in litaOpciones:
+			if i == 'X':
+				continue
+			elif i == '0':
+				continue 
+			elif '2' in i :
+				continue	
+			elif 'B' in i :
+				continue
+
+			self.lista_robot_ran.append(i)
+
+		if len(self.lista_robot_ran)<=0:
+			for i in litaOpciones:
+			
+				if i == 'X':
+					continue
+				elif i == '0':
+					continue 
+				self.lista_robot_ran.append(i)
+		
+		n = random.randint(0,int(len(self.lista_robot_ran)-1))
+
+		self.Jugadar_Robot_Ran=self.lista_robot_ran[n]
+
+		print ("Jugada Robot: ", self.Jugadar_Robot_Ran)
 		return self.Jugadar_Robot_Ran
 
 
@@ -98,7 +139,7 @@ class Tateti:
 
 							if dif2[0] not in listaOpciones:
 								Resultado = "RANDOM"
-								print ("Sale del If dif2 q no está en la lista 101", Resultado)
+								#print ("Sale del If dif2 q no está en la lista 101", Resultado)
 								continue
 							
 							Resultado = dif2[0]
@@ -246,6 +287,7 @@ class Tateti:
 		self.ListaGanadoraf =[]
 		self.Li =[]
 		self.litaOpciones=[]
+		self.Jugadar_Robot_Ran = []
 
 	def input_usuario(self, msg, test_value=""):
 		if self.origen == "consola":
@@ -287,7 +329,7 @@ class Tateti:
 			#	print("input_user_DEFENSA 363", input_userR)
 				
 				if input_userR == "RANDOM":
-					input_userR = self.random (self.lista_de_opciones_matriz)
+					input_userR = self.random_inteligencia_B2 (self.lista_de_opciones_matriz)
 					print("PC Juega RANDOM 367", input_userR)
 					self.Lista_user2.append(input_userR)
 					self.lista_de_opciones_matriz = [ficha if i == input_userR else i for i in self.lista_de_opciones_matriz]
@@ -327,16 +369,13 @@ class Tateti:
 				#print (self.Lista_user2 [0])
 				#print (self.Lista_user2 [1])
 				self.lista_de_opciones_matriz = ["=" if i == input_userR else i for i in self.lista_de_opciones_matriz]
-				print ("lista_de_opciones_matriz", self.lista_de_opciones_matriz)
+				#print ("lista_de_opciones_matriz", self.lista_de_opciones_matriz)
 				#print("Matriz", self.lista_de_opciones_matriz)
 				#print (self.lista_de_opciones_matriz)
 				self.print_matriz(self.lista_de_opciones_matriz)
 				return
 
-				
-
-
-
+			
 
 
 		input_user = self.input_usuario(" (s)Salvar (q) Salir  \n Elija un opción Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
