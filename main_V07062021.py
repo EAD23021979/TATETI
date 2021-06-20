@@ -8,9 +8,158 @@
 import datetime as dt # Para importar el modulo que maneja fecjas
 import string #importo funciones para tener el abecedario en una lista.
 from datetime import datetime
-
+import random
 
 class Tateti:
+	def ficha (self,VL_numero_de_jugador):
+
+		if VL_numero_de_jugador == "1":
+			ficha = "X"
+		elif VL_numero_de_jugador == "2":
+			ficha = "0"
+		else:
+			ficha = "="
+		return ficha
+
+	def random (self,litaOpciones):
+		import random
+		self.lista_robot_ran = []
+
+		#print ("ListaOpciones =",litaOpciones)
+
+			
+		for i in litaOpciones:
+			if i == 'X':
+				continue
+			elif i == '0':
+				continue
+			self.lista_robot_ran.append(i)
+
+		n = random.randint(0,int(len(self.lista_robot_ran)-1))
+
+		self.Jugadar_Robot_Ran=self.lista_robot_ran[n]
+
+		print ("Jugada Robot: ", self.Jugadar_Robot_Ran)
+		return self.Jugadar_Robot_Ran
+
+	def random_inteligencia_B2 (self,litaOpciones):
+		
+		import random
+		#print ("ListaOpciones =",litaOpciones)
+
+		self.lista_robot_ran = []
+		
+		if 'B2' in litaOpciones:
+			self.Jugadar_Robot_Ran = 'B2'
+			print ("Jugada Robot:", self.Jugadar_Robot_Ran)
+			return self.Jugadar_Robot_Ran
+
+		for i in litaOpciones:
+			if i == 'X':
+				continue
+			elif i == '0':
+				continue 
+			elif i == '=':
+				continue 
+			elif '2' in i :
+				continue	
+			elif 'B' in i :
+				continue
+
+			self.lista_robot_ran.append(i)
+
+		if len(self.lista_robot_ran)<=0:
+			for i in litaOpciones:
+			
+				if i == 'X':
+					continue
+				elif i == '0':
+					continue 
+				elif i == '=':
+					continue 
+				self.lista_robot_ran.append(i)
+		
+		n = random.randint(0,int(len(self.lista_robot_ran)-1))
+
+		self.Jugadar_Robot_Ran=self.lista_robot_ran[n]
+
+		print ("Jugada Robot: ", self.Jugadar_Robot_Ran)
+		return self.Jugadar_Robot_Ran
+
+
+	def Jugar_solo_ATAQUE_J2_DEFENSA_J1 (self,ListaGanadoraf,ListaJugadorf,listaOpciones):
+
+		Resultado = []
+		if len(ListaJugadorf) == 0:
+			Resultado = "RANDOM"
+			#print (Resultado)
+			return Resultado	
+
+
+		#print ("ListaJugadorf 54", ListaJugadorf)
+		#print ("len(ListaJugadorf [0] 55)", len(ListaJugadorf [0]))
+		#print ("ListaJugadorf [0] 56", ListaJugadorf [0])
+		#print (len(ListaJugadorf))
+		if len(ListaJugadorf[0]) <= 1:
+			Resultado = "RANDOM"
+		#	print (Resultado)
+			return Resultado
+			quit ()	
+
+		# for i in ListaJugadorf:
+		# 	print ("ListaJugadorf_Random", ListaJugadorf)
+		# 	a = 0
+		# 	a = len(i)+a
+		# 	print (a)
+		# 	if a == 1:
+		# 		#print ("RANDOM")
+		# 		Resultado = "RANDOM"
+		# 		print ("Resultado1", Resultado) 
+		# 		return Resultado
+		# 		quit ()
+
+		for elemLG in ListaGanadoraf:#['A1', 'A2', 'A3']
+		#	print ("Pase por aca")
+			dif = []
+			#Hola=[]
+			#ListaJugaro2=tuple(ListaJugaro) ('A1','B1','C2')
+			for elemLJ in ListaJugadorf: #A1 ('A1','B1','C2')
+				if elemLJ in elemLG:
+		#			print ("elemLJ_A 83" , elemLJ)
+		#			print ("elemLG_A 84" , elemLG)
+					dif.append(elemLJ)
+		#			print ("Dif_antes de Len 86", dif)
+				
+					if len(dif)>=2:
+						for a in elemLG:
+							dif2=[]
+							if a in dif:
+		#						print("a", a)
+								continue
+		#					print ("DIF_after_1 94", dif2)	
+							dif2.append(a)
+		#					print("DIF2_LISTA 96", dif2)
+		#					print("DIF2_1ER_ELEMENTO 97",dif2[0]) #hasta acá Perfecto
+
+							if dif2[0] not in listaOpciones:
+								Resultado = "RANDOM"
+								#print ("Sale del If dif2 q no está en la lista 101", Resultado)
+								continue
+							
+							Resultado = dif2[0]
+							print("Jugada Robot: ", Resultado)
+							return Resultado
+				
+				# Resultado = "RANDOM"
+				# print ("Resultado 109, "Resultado)
+				# return Resultado
+		# 					print ("DIF_2",dif2)
+		# 					print ("Robot_Log:", dif2[0])
+		# 					quit ()
+		
+		Resultado = "RANDOM"
+		#print ("Resultado 116", Resultado)# #print("RANDOM")
+		return Resultado
 
 	def sumar( self, a, b):
 		self.c = a + b
@@ -21,23 +170,23 @@ class Tateti:
 		from io import open
 		import csv
 
-
-		with open(archivo_x, newline='') as f:
-		    reader = csv.reader(f)
-		    data = list(reader)
-
+		try:
+			with open(archivo_x, newline='') as f:
+				reader = csv.reader(f)
+				data = list(reader)
+		except Exception:
+			print ("ERROR: Partida Inexistente")
+			self.archivo_guardado = input("Con qué nombre grabó su partida anterior?")
+			self.reuperar_archivo_partida_guardada(self.archivo_guardado)
 		#print(data)
 
 		self.Lista_user1 = list(data[0])
-
 		self.Lista_user2 = list(data[1])
 		self.lista_de_opciones_matriz = list(data[2])
 		
-		
-
 		turno_vl = open (archivo_x, "r")
 		Turno= turno_vl.readlines()[4]
-		self.turno = int(Turno) #data[4]
+		self.turno2 = int(Turno) #data[4]
 
 		turno_vl = open (archivo_x, "r")
 		VL= turno_vl.readlines()[5]
@@ -45,19 +194,6 @@ class Tateti:
 
 
 		return
-
-		# print ("Lista_Jugador_1=",Lista_Jugador_1)
-		# print ("Lista_Jugador_2=",Lista_Jugador_2)
-		# print ("Matriz_Front_End=",Matriz_Front_End)
-		# print ("Turno",Turno)
-		# print ("VL",Turno)
-
-		# LJ1 = self.Lista_user1
-		# LJ2 = self.Lista_user2
-		# MFE = self.lista_de_opciones_matriz
-		# LG = self.winall_auto_step2
-		# Turno = self.turno
-		# VL=self.VL
 
 	def time_stamp_file_generator (self, name):
 		import datetime as dt
@@ -72,9 +208,9 @@ class Tateti:
 
 	def guardar_partida (self):
 
-		input_user = input("Desea Guardar la partida? (Y/N) ").upper()
+		input_user3 = input("Desea Guardar la partida? (Y/N) ").upper()
 
-		if input_user == "Y":
+		if input_user3 == "Y":
 			name= input("Con qué nombre desea grabar el archivo? ")
 			nombre_archivo= self.time_stamp_file_generator (name)
 			
@@ -84,8 +220,8 @@ class Tateti:
 			LJ2 = self.Lista_user2
 			MFE = self.lista_de_opciones_matriz
 			LG = self.winall_auto_step2
-			Turno = self.turno
-			VL=self.VL
+			Turno = int(self.turno) # no está recuperando correctamente el valor
+			VL=self.VL # no está recuperando correctamente el valor
 
 			archivo_texto.truncate()
 			#archivo_texto.write("Lista_Jugador_1=(")
@@ -149,6 +285,13 @@ class Tateti:
 		self.origen = origen
 		self.turno = 1
 		self.partida_guardada = 'N'
+		self.JV = 1
+		self.partida_single_player = 2
+		self.ListaJugadorf =[]
+		self.ListaGanadoraf =[]
+		self.Li =[]
+		self.litaOpciones=[]
+		self.Jugadar_Robot_Ran = []
 
 	def input_usuario(self, msg, test_value=""):
 		if self.origen == "consola":
@@ -160,7 +303,7 @@ class Tateti:
 		if self.partida_guardada == 'Y':
 		 	return
 		try:
-			self.VL = int(self.input_usuario("De qué tamaño requerimos la matriz: " ))
+			self.VL = int(self.input_usuario("\n\nDe qué tamaño requerimos la matriz: " ))
 		except Exception:
 			self.VL = tamanio
 		if self.VL < 3:
@@ -170,33 +313,95 @@ class Tateti:
 	def input_jugador(self, numero_jugador, jugada=None):
 		if numero_jugador == "1":
 			ficha = "X"
-		else:
+		elif numero_jugador == "2":
 			ficha = "0"
+		else:
+			ficha = "="
+
 		if self.origen == "test":
 			input_user = jugada
 		
-		if self.turno%2==0:
-		 	numero_jugador = "1"
-		 	ficha = "X"
-		else:
-		 	numero_jugador= "2"
-		 	ficha = "0"
+		if numero_jugador == 'R':
+			input_userR = self.Jugar_solo_ATAQUE_J2_DEFENSA_J1 (self.winall_auto_step2,self.Lista_user2,self.lista_de_opciones_matriz)
+			#print ("ListaUser_ATAQUE 356", input_userR)
+			#print ("ListaUser1 357", self.Lista_user1)
+			#print ("self.lista_de_opciones_matriz 358", self.lista_de_opciones_matriz)
+			#print ("ListaGanadora 359", self.winall_auto_step2)
+			#print ("Input_User_1 284", input_userR)
+			if input_userR == "RANDOM":
+				input_userR = self.Jugar_solo_ATAQUE_J2_DEFENSA_J1 (self.winall_auto_step2,self.Lista_user1,self.lista_de_opciones_matriz)
+			#	print("input_user_DEFENSA 363", input_userR)
+				
+				if input_userR == "RANDOM":
+					input_userR = self.random_inteligencia_B2 (self.lista_de_opciones_matriz)
+					#print("PC Juega RANDOM 367", input_userR)
+					self.Lista_user2.append(input_userR)
+					self.lista_de_opciones_matriz = [ficha if i == input_userR else i for i in self.lista_de_opciones_matriz]
+					self.print_matriz(self.lista_de_opciones_matriz)
+					return
+				
+				self.Lista_user2.append(input_userR)
+				self.lista_de_opciones_matriz = [ficha if i == input_userR else i for i in self.lista_de_opciones_matriz]
+				self.print_matriz(self.lista_de_opciones_matriz)
+				#return input_userR
+			#	print("Estoy por aca 300")
 
-		input_user = self.input_usuario(" (s) para salvar el juego \n Elija un opción Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
-		#Ver dónde poner este IF para Guardar y cerrar el juego	
-		if input_user =='S':
-			self.guardar_partida()
-			quit()
-		pass
+					
+				termino_el_partido = self.validacion_ganadores(self.Lista_user2)
+				
+				if termino_el_partido == 1:
+					print("GANO EL JUGADOR R [0]")
+					#print (self.turno)
+					#print (self.Lista_user2)
+					#self.lista_de_opciones_matriz = [ficha if i == input_userR else i for i in self.lista_de_opciones_matriz]
+					#self.print_matriz(self.lista_de_opciones_matriz)
+				return
+
+
+
+			else:
+			#	print ("Input_User_1_dos 316", input_userR)
+				#print ("Ficha", ficha)
+				#ficha = "="
+				#print ("Ficha", ficha)
+			#	print ("Lista_user2 320", self.Lista_user2)
+			#	print ("lista_de_opciones_matriz 321", self.lista_de_opciones_matriz)
+				print("PC Juega: ATAQUE 322", input_userR)
+				
+				self.Lista_user2.append(input_userR)
+				#print (self.Lista_user2)
+				#print (self.Lista_user2 [0])
+				#print (self.Lista_user2 [1])
+				self.lista_de_opciones_matriz = ["=" if i == input_userR else i for i in self.lista_de_opciones_matriz]
+				#print ("lista_de_opciones_matriz", self.lista_de_opciones_matriz)
+				#print("Matriz", self.lista_de_opciones_matriz)
+				#print (self.lista_de_opciones_matriz)
+				self.print_matriz(self.lista_de_opciones_matriz)
+				return
+
+			
+
+
+		input_user = self.input_usuario(" (s)Salvar (q) Salir  \n Elija un opción Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
 		
-
-		while input_user not in self.lista_de_opciones_matriz or input_user in ("X", "0"):
-
-			input_user = self.input_usuario(" (s) para salvar el juego \n Elija un opción Válida Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
+		if self.origen == "test":
+			input_user = jugada
+		else:
 			if input_user =='S':
 				self.guardar_partida()
 				quit()
-			pass
+		pass
+		
+
+		while input_user not in self.lista_de_opciones_matriz or input_user in ("X", "0", "R"):
+
+			input_user = self.input_usuario(" (s)Salvar (q) Salir  \n Elija un opción Válida Jugador %s [%s]: " % (numero_jugador, ficha)).upper()
+			if self.origen == "test":
+				input_user = jugada
+			else:
+				if input_user =='S':
+					self.guardar_partida()
+					quit()
 
 		if input_user in self.lista_de_opciones_matriz:			
 			if numero_jugador == "1":
@@ -206,19 +411,21 @@ class Tateti:
 					print("GANO EL JUGADOR 1 [X]")
 					self.lista_de_opciones_matriz = [ficha if i == input_user else i for i in self.lista_de_opciones_matriz]
 					self.print_matriz(self.lista_de_opciones_matriz)
-					quit() #
+					#quit() #
 					return
-			else:
+			elif numero_jugador == "2":
 				self.Lista_user2.append(input_user)
 				termino_el_partido = self.validacion_ganadores(self.Lista_user2)
 				if termino_el_partido == 1:
 					print("GANO EL JUGADOR 2 [0]")
-					print (self.turno)
-					print (self.Lista_user2)
+					#print (self.turno)
+					#print (self.Lista_user2)
 					self.lista_de_opciones_matriz = [ficha if i == input_user else i for i in self.lista_de_opciones_matriz]
 					self.print_matriz(self.lista_de_opciones_matriz)	
 					return
-			
+				
+
+
 			self.lista_de_opciones_matriz = [ficha if i == input_user else i for i in self.lista_de_opciones_matriz]
 			# print(self.lista_de_opciones_matriz)
 			self.print_matriz(self.lista_de_opciones_matriz)
@@ -327,14 +534,32 @@ class Tateti:
 		# print (" ")
 
 	def empezar(self):
+
+		if self.origen == "test":
+			self.cantida_de_jugadores = 2
+		else:
+			self.cantida_de_jugadores = input("HOLA!! BIENVENIDO AL JUEGO!! \n\nDesea empezar una partide de ctos jugadores (1 o 2)?: ",).upper()
+
+		# if self.cantida_de_jugadores == 1:
+		# 	print ("Nueva logica para el Jugador 2")
+		
 		if self.origen == "test":
 			self.partida_guardada = 'N'
 		else:
-			self.partida_guardada = input("HOLA!! BIENVENIDO AL JUEGO!! --> tiene alguna partida gudardada? (Y/N)",).upper()
+			self.partida_guardada = input("\n\nTiene alguna partida guardada? (Y/N): ",).upper()
+
+		while self.partida_guardada not in ('Y','N'):
+			self.partida_guardada = input("Ingrese un valor valido (Y/N): ",).upper()
+			continue
 		
 		if self.partida_guardada == 'Y':
 			self.archivo_guardado = input("Con qué nombre grabó su partida anterior?")
 			self.reuperar_archivo_partida_guardada(self.archivo_guardado)
+		
+		if self.partida_guardada == 'N':
+			self.turno = 1
+		else:
+			self.turno = self.turno2
 
 		
 		self.inicializar_tablero()
@@ -343,10 +568,6 @@ class Tateti:
 			pass
 		elif self.origen == "test":
 			return self.partida_guardada == 'N'
-
-
-		if self.partida_guardada == 'N':
-			self.turno = 1
 
 		self.termino_el_juego = 1  # Si teRmino del juego es == 0 se terminó el juego
 
@@ -358,18 +579,31 @@ class Tateti:
 			# print ("SISMO",self.winall_auto_step2)
 			# Contar_X(self.winall_auto_step2)
 			# Entrada Jugardor 1
-			if self.turno > (self.VL * self.VL):
+			if self.turno > (self.VL * self.VL)+1:
 				print("TABLAS")
 				print ("TURNO", self.turno)
 				break
+		
+			#print ("cantida_de_jugadores", self.cantida_de_jugadores)
+			if self.turno%2==0:
+			  	JV = "1"
+			else:
+			  	if self.cantida_de_jugadores == 1:
+			  		JV = 'R'
+			  	else:
+			  		JV = '2'
+		
 
-			self.input_jugador("1")
+			#print ("JV", JV)
+			self.input_jugador(JV)
 
 			self.termino_el_partido = self.validacion_ganadores(self.Lista_user1)
 			# print (termino_el_partido)
 			# print ("Partido_Cerrado After F", Partido_Cerrado)
 			if self.termino_el_partido == 1:
-				#print("GANO EL JUGADOR 1 [A]")
+				JV=1
+				fichas_f=self.ficha(str(JV))
+				print("GANO EL JUGADOR %s [%s]"% (JV,fichas_f))
 				break
 			else:
 				pass
@@ -380,18 +614,30 @@ class Tateti:
 			# DEBUGMODE print ("Turno",turno)
 			# Actualizar_lista () # No entiendo porqué si actulizo la lista, cuando la toma para valider en el while lo hace con la antigua.
 			# print ("EMi",self.winall_auto_step2) # Acá es donde se envidencia que la liata self.winall_auto_step2 no es la que debería ser luego de correr la función.
-			if self.turno > (self.VL * self.VL):
+			if self.turno > (self.VL * self.VL)+1:
 				print("TABLAS")
 				print ("TURNO", self.turno)
 				break
 
-			self.input_jugador("2")
+			#print ("antida_de_jugadores", self.cantida_de_jugadores)
+			if self.turno%2==0:
+			  	JV = "1"
+			else:
+			  	if self.cantida_de_jugadores == '1':
+			  		JV = 'R'
+			  	else:
+			  		JV = '2'
+
+			#print ("JV", JV)
+			self.input_jugador(JV)
 
 			self.termino_el_partido = self.validacion_ganadores(self.Lista_user2)
 			# print (termino_el_partido)
 			# print ("Partido_Cerrado After F", Partido_Cerrado)
 			if self.termino_el_partido == 1:
-				#print("GANO EL JUGADOR 2 [0]")
+				fichas_f=self.ficha (str(JV))
+				print("GANO EL JUGADOR %s [%s]"% (JV,fichas_f))
+				
 				break
 
 		print("FIN DEL JUEGO")
@@ -412,11 +658,7 @@ class Tateti:
 
 		for i in range (0,len(lista),self.VL):
 			Matriz_front_end.append(list(lista[i:i+self.VL]))
-		
-		# if self.partida_guardada == 'Y':
 
-		# 	Matriz_front_end = self.lista_de_opciones_matriz
-		
 		
 		for i in Matriz_front_end:
 			print (i)
@@ -455,6 +697,6 @@ class Tateti:
 		#print ("out of loop")
 
 
-#JUGAR = Tateti()
-
-#JUGAR.empezar()
+if __name__=='__main__':
+	JUGAR = Tateti()
+	JUGAR.empezar()
