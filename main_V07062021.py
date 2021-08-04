@@ -48,6 +48,8 @@ class Tateti:
 		#print ("ListaOpciones =",litaOpciones)
 
 		self.lista_robot_ran = []
+
+		
 		
 		if 'B2' in litaOpciones:
 			self.Jugadar_Robot_Ran = 'B2'

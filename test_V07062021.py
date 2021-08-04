@@ -1,4 +1,4 @@
-
+#
 import unittest
 from main_V07062021 import Tateti
 
@@ -16,7 +16,7 @@ class TestTateti:
         t.input_jugador("2", "B2")
         t.input_jugador("1", "C1")
         captured = capsys.readouterr()
-        assert("GANO EL JUGADOR 1 [X]" in captured.out)
+        assert ("GANO EL JUGADOR 1 [X]" in captured.out)
         assert ("GANO EL JUGADOR 2 [0]" not in captured.out)
 
     def test_bug_2021(self, capsys):#3
@@ -232,7 +232,7 @@ class TestTateti:
        t.input_jugador("2", "A2")
        t.input_jugador("1", "C2")
        t.input_jugador("2", "B3")
-       t.input_jugador("1", "C3")
+       #t.input_jugador("1", "C3")
        captured = capsys.readouterr()
        #t.self.turno = 10
        assert ("GANO EL JUGADOR 1 [X]" not in captured.out)
